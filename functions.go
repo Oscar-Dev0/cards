@@ -62,7 +62,7 @@ func drawCircleImage(dc *gg.Context, img image.Image, x, y, radius float64, bord
 	dc.SetRGB(float64(borderColor.R), float64(borderColor.G), float64(borderColor.B))
 
 	dc.SetLineWidth(borderWidth) // Configurar el ancho del borde
-	dc.DrawCircle(x+radius, y+radius, radius)
+	dc.DrawCircle(x+radius, y+radius, radius +10)
 	dc.Stroke()
 
 	// Dibujar el contenido de la imagen dentro del círculo
@@ -165,3 +165,28 @@ func setFont(dc *gg.Context, defaul string, size float64) {
 		dc.SetFontFace(*fontFace)
 	}
 }
+
+
+func DrawStringAnchoredShadow(dc *gg.Context, text string, x, y float64, colorP color.RGBA, font string, size float64) {
+	// Configurar el color del sombreado
+	shadowColor := color.RGBA{0, 0, 0, 128} // Color del sombreado (negro semi-transparente)
+	shadowOffset := 3.45                    // Desplazamiento del sombreado en píxeles
+
+	// Configurar la fuente y el tamaño del texto
+	setFont(dc, font, size)
+
+	// Función para convertir color.RGBA a valores entre 0.0 y 1.0
+	toRGBA := func(c color.RGBA) (r, g, b, a float64) {
+		return float64(c.R) / 255.0, float64(c.G) / 255.0, float64(c.B) / 255.0, float64(c.A) / 255.0
+	}
+
+	// Dibujar el sombreado del texto
+	r, g, b, a := toRGBA(shadowColor)
+	dc.SetRGBA(r, g, b, a)
+	dc.DrawStringAnchored(text, x+shadowOffset, y+shadowOffset, 0.5, 0.5)
+
+	dc.SetRGB(float64(colorP.R), float64(colorP.G), float64(colorP.B))
+	dc.DrawStringAnchored(text, x, y, 0.5, 0.5)
+}
+
+
